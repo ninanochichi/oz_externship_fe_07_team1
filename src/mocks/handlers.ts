@@ -1,22 +1,26 @@
 // handlers.ts
-import { http, HttpResponse } from 'msw'
 import {
   getPostCategoriesMOCK,
   createPostMOCK,
   getPostDetailMOCK,
   updatePostMOCK,
+  getPostListMOCK,
 } from './handlers/post-handlers'
-
 import { commentHandlers } from './handlers/comment-handlers'
+import { getRefreshTokenMOCK } from './handlers/auth-handlers'
+import {
+  getPresignedUrlMOCK,
+  uploadImageToS3MOCK,
+} from './handlers/image-handlers'
 
 export const handlers = [
-  http.get('/api/hello', () => {
-    return HttpResponse.json({ message: 'Hello, world!', code: 200 })
-  }),
-
   getPostCategoriesMOCK,
+  getPostListMOCK,
   createPostMOCK,
   getPostDetailMOCK,
   updatePostMOCK,
+  getRefreshTokenMOCK,
+  getPresignedUrlMOCK,
+  uploadImageToS3MOCK,
   ...commentHandlers,
 ]
