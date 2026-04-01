@@ -9,12 +9,16 @@ import { useEffect } from 'react'
 import { useAccessTokenStore } from './store/useAccessTokenStore'
 import { useUserInfo } from './hooks/queries/useUserQueries'
 import { useUserInfoStore } from './store/useUserInfoStore'
+import PrivateRoute from './components/common/PrivateRoute'
 
 function App() {
-  const { accessToken } = useAccessTokenStore()
+  const { isValidToken } = useAccessTokenStore()
   const { setUserInfo } = useUserInfoStore()
+
+  const valid = isValidToken()
+
   const { data: newUserInfo, isSuccess } = useUserInfo({
-    enabled: !!accessToken,
+    enabled: valid,
   })
 
   useEffect(() => {
@@ -28,20 +32,29 @@ function App() {
       <Route element={<RootLayout />}>
         <Route path="/" element={<Navigate to="/posts" replace />} />
 
-        {/* 목록 페이지 */}
         <Route path="/posts" element={<PostList />} />
 
-        {/* 상세 페이지 */}
         <Route path="/posts/:id" element={<CommunityDetailPage />} />
 
-        {/* 게시글 작성 페이지 */}
-        <Route path="/posts/create" element={<PostCreate />} />
+        <Route
+          path="/posts/create"
+          element={
+            <PrivateRoute>
+              <PostCreate />
+            </PrivateRoute>
+          }
+        />
 
-        {/* 게시글 수정 페이지 */}
-        <Route path="/posts/:id/edit" element={<PostEdit />} />
+        <Route
+          path="/posts/:id/edit"
+          element={
+            <PrivateRoute>
+              <PostEdit />
+            </PrivateRoute>
+          }
+        />
       </Route>
 
-      {/* UI 테스트 페이지 */}
       <Route path="/test" element={<Test />} />
     </Routes>
   )
